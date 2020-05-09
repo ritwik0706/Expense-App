@@ -5,8 +5,9 @@ import '../models/transaction.dart';
 
 class TransactionList extends StatelessWidget {
   final List<Transaction> transactions;
+  final Function deleteTxHandler;
 
-  TransactionList(this.transactions);
+  TransactionList({this.transactions, this.deleteTxHandler});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,9 @@ class TransactionList extends StatelessWidget {
                   'No Transaction Yet!!',
                   style: Theme.of(context).textTheme.headline6,
                 ),
-                SizedBox(height: 20 ,),
+                SizedBox(
+                  height: 20,
+                ),
                 Container(
                   // margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
                   height: 200,
@@ -33,42 +36,32 @@ class TransactionList extends StatelessWidget {
           : ListView.builder(
               itemBuilder: (ctx, index) {
                 return Card(
-                  margin: EdgeInsets.all(10),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin:
-                            EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.purple,
-                            width: 2,
-                          ),
-                        ),
-                        padding: EdgeInsets.all(10),
-                        child: Text(
-                          '\Rs. ${transactions[index].amount.toStringAsFixed(2)}',
-                          style: TextStyle(
-                              color: Theme.of(context).primaryColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            transactions[index].title.toString(),
-                            style: Theme.of(context).textTheme.headline6,
-                          ),
-                          Text(
-                            DateFormat.yMMMd().format(transactions[index].date),
-                            style: TextStyle(color: Colors.grey),
-                          )
-                        ],
-                      )
-                    ],
+                  elevation: 7,
+                  margin: EdgeInsets.symmetric(
+                    vertical: 7,
+                    horizontal: 5,
+                  ),
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      radius: 30,
+                      child: Padding(
+                          padding: EdgeInsets.all(6),
+                          child: FittedBox(
+                              child:
+                                  Text('Rs. ${transactions[index].amount}'))),
+                    ),
+                    title: Text(
+                      transactions[index].title,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    subtitle: Text(
+                      DateFormat.yMMMd().format(transactions[index].date),
+                    ),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete),
+                      color: Theme.of(context).errorColor,
+                      onPressed: () => deleteTxHandler(transactions[index].id),
+                    ),
                   ),
                 );
               },
