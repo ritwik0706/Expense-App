@@ -1,7 +1,8 @@
-import 'package:expense_app/models/transaction.dart';
-import 'package:expense_app/widgets/chart_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../models/transaction.dart';
+import './chart_bar.dart';
 
 class Chart extends StatelessWidget {
   final List<Transaction> _recentTransactions;
@@ -40,7 +41,7 @@ class Chart extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupedTransactions.map((data) {
             return Flexible(
               fit: FlexFit.tight,
