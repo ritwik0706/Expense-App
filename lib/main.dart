@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter App',
+      title: 'Expenser',
       theme: ThemeData(
         primarySwatch: Colors.purple,
         accentColor: Colors.amber,
@@ -113,12 +113,66 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final _isLandScape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
+  List<Widget> _buildPortraitContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txList) {
+    return [
+      Container(
+        height: (mediaQuery.size.height -
+                appBar.preferredSize.height -
+                mediaQuery.padding.top) *
+            0.3,
+        child: Chart(_recentTransactions),
+      ),
+      txList,
+    ];
+  }
+
+  List<Widget> _buildlandScapeContent(
+      MediaQueryData mediaQuery, AppBar appBar, Widget txList) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Show Chart',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          Switch.adaptive(
+              activeColor: Theme.of(context).accentColor,
+              value: _showChart,
+              onChanged: (val) {
+                setState(() {
+                  _showChart = val;
+                });
+              }),
+        ],
+      ),
+      _showChart
+          ? Container(
+              height: (mediaQuery.size.height -
+                      appBar.preferredSize.height -
+                      mediaQuery.padding.top) *
+                  0.7,
+              child: Chart(_recentTransactions),
+            )
+          : txList
+    ];
+  }
+
+  Widget _getAppBar() {
+    return AppBar(
+            title: Text('Expenser'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTransaction(context),
+              )
+            ],
+          );
+  }
+
+  Widget _getCupertinoNavigationBar() {
+    return CupertinoNavigationBar(
             middle: Text('Expenser'),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -129,16 +183,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-          )
-        : AppBar(
-            title: Text('Expenser'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => _startAddNewTransaction(context),
-              )
-            ],
           );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print('build() : MyHomePageState');
+    final mediaQuery = MediaQuery.of(context);
+    final _isLandScape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? _getCupertinoNavigationBar()
+        : _getAppBar();
     final txList = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -154,43 +209,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (_isLandScape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Show Chart',
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  Switch.adaptive(
-                      activeColor: Theme.of(context).accentColor,
-                      value: _showChart,
-                      onChanged: (val) {
-                        setState(() {
-                          _showChart = val;
-                        });
-                      }),
-                ],
-              ),
-            if (!_isLandScape)
-              Container(
-                height: (mediaQuery.size.height -
-                        appBar.preferredSize.height -
-                        mediaQuery.padding.top) *
-                    0.3,
-                child: Chart(_recentTransactions),
-              ),
-            if (!_isLandScape) txList,
-            if (_isLandScape)
-              _showChart
-                  ? Container(
-                      height: (mediaQuery.size.height -
-                              appBar.preferredSize.height -
-                              mediaQuery.padding.top) *
-                          0.7,
-                      child: Chart(_recentTransactions),
-                    )
-                  : txList
+            if (_isLandScape) ..._buildlandScapeContent(mediaQuery, appBar, txList),
+            if (!_isLandScape) ..._buildPortraitContent(mediaQuery, appBar, txList),
           ],
         ),
       ),

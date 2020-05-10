@@ -7,7 +7,7 @@ import './chart_bar.dart';
 class Chart extends StatelessWidget {
   final List<Transaction> _recentTransactions;
 
-  Chart(this._recentTransactions);
+  const Chart(this._recentTransactions);
 
   List<Map<String, Object>> get groupedTransactions {
     return List.generate(7, (index) {
@@ -21,7 +21,6 @@ class Chart extends StatelessWidget {
           totalSum += _recentTransactions[i].amount;
         }
       }
-      print(weekDay);
       return {'day': DateFormat.E().format(weekDay), 'amount': totalSum};
     }).reversed.toList();
   }
@@ -34,12 +33,12 @@ class Chart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(groupedTransactions);
+    print('build() : Chart');
     return Card(
       elevation: 10,
       margin: EdgeInsets.all(20),
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupedTransactions.map((data) {
