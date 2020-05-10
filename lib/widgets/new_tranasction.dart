@@ -17,7 +17,7 @@ class NewTransaction extends StatefulWidget {
 class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime _selectedDate;
+  DateTime _selectedDate = DateTime.now();
 
   void _submitData() {
     final String enteredTitle = _titleController.text;
@@ -63,14 +63,14 @@ class _NewTransactionState extends State<NewTransaction> {
                 decoration: InputDecoration(labelText: 'Title'),
                 controller: _titleController,
                 keyboardType: TextInputType.text,
-                onSubmitted: (_) => _submitData(),
+                // onSubmitted: (_) => _submitData(),
                 // onChanged: (value) => titleInput = value,
               ),
               TextField(
                 decoration: InputDecoration(labelText: 'Amount'),
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                onSubmitted: (_) => _submitData(),
+                // onSubmitted: (_) => _submitData(),
                 // onChanged: (value) => amountInput = value,
               ),
               Container(
@@ -81,7 +81,7 @@ class _NewTransactionState extends State<NewTransaction> {
                     Expanded(
                       child: Text(_selectedDate == null
                           ? 'No Date Choosen!'
-                          : 'Picked Date : ${DateFormat.yMMMd().format(_selectedDate)}'),
+                          : 'Transaction Date : ${DateFormat.yMMMd().format(_selectedDate)}'),
                     ),
                     AdaptiveFlatButton('Choose Date', _openDatePicker),
                   ],

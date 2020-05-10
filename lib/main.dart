@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 
 import './models/transaction.dart';
 import './widgets/new_tranasction.dart';
@@ -56,7 +57,7 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver{
   final List<Transaction> _userTransactions = [
     // Transaction(
     //   id: 't1',
@@ -73,6 +74,23 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   bool _showChart = false;
+  // App Lifecycles
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   WidgetsBinding.instance.addObserver(this);
+  // }
+
+  // @override
+  // void didChangeAppLifecycleState(AppLifecycleState state) {
+  //   print(state);
+  // }
+
+  // @override
+  // void dispose() {
+  //   super.dispose();
+  //   WidgetsBinding.instance.removeObserver(this);
+  // }
 
   List<Transaction> get _recentTransactions {
     return _userTransactions.where((element) {
@@ -186,7 +204,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    print('build() : MyHomePageState');
     final mediaQuery = MediaQuery.of(context);
     final _isLandScape = mediaQuery.orientation == Orientation.landscape;
     final PreferredSizeWidget appBar = _buildAppBar();
