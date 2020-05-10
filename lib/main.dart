@@ -159,20 +159,9 @@ class _MyHomePageState extends State<MyHomePage> {
     ];
   }
 
-  Widget _getAppBar() {
-    return AppBar(
-            title: Text('Expenser'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => _startAddNewTransaction(context),
-              )
-            ],
-          );
-  }
-
-  Widget _getCupertinoNavigationBar() {
-    return CupertinoNavigationBar(
+  Widget _buildAppBar() {
+    return Platform.isIOS
+        ? CupertinoNavigationBar(
             middle: Text('Expenser'),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
@@ -183,6 +172,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+          )
+        : AppBar(
+            title: Text('Expenser'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTransaction(context),
+              )
+            ],
           );
   }
 
@@ -191,9 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
     print('build() : MyHomePageState');
     final mediaQuery = MediaQuery.of(context);
     final _isLandScape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
-        ? _getCupertinoNavigationBar()
-        : _getAppBar();
+    final PreferredSizeWidget appBar = _buildAppBar();
     final txList = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -209,8 +205,10 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (_isLandScape) ..._buildlandScapeContent(mediaQuery, appBar, txList),
-            if (!_isLandScape) ..._buildPortraitContent(mediaQuery, appBar, txList),
+            if (_isLandScape)
+              ..._buildlandScapeContent(mediaQuery, appBar, txList),
+            if (!_isLandScape)
+              ..._buildPortraitContent(mediaQuery, appBar, txList),
           ],
         ),
       ),
